@@ -1,2 +1,4 @@
 build-client-Desktop_x86_darwin_generic_mach_o_64bit-Debug
 build-server-Desktop_x86_darwin_generic_mach_o_64bit-Debug
+build-client-Desktop-Debug
+build-server-Desktop-Debug
