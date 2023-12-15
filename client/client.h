@@ -19,7 +19,11 @@ public:
 private slots:
     void on_connectServer_clicked();
 
-    void on_pushButton_clicked();
+    void on_push_exchange_rate_clicked();
+
+    void on_push_shares_rate_clicked();
+
+    void on_push_weather_forecast_clicked();
 
 public slots:
     void slotReadyRead();

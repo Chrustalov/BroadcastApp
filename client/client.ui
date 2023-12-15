@@ -46,7 +46,7 @@ background: #046FE0;
      <string>Connect</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="push_weather_forecast">
     <property name="geometry">
      <rect>
       <x>550</x>
@@ -73,7 +73,7 @@ background: #036317;</string>
      <string>Підписатись</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="push_shares_rate">
     <property name="geometry">
      <rect>
       <x>290</x>
@@ -100,7 +100,7 @@ background: #036317;</string>
      <string>Підписатись</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="push_exchange_rate">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -279,7 +279,8 @@ padding: 0 17px;</string>
     <property name="styleSheet">
      <string notr="true">border-radius: 8px;
 border: 1px solid #fff;
-background: #000;</string>
+background: #000;
+color: #000;</string>
     </property>
     <property name="html">
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;

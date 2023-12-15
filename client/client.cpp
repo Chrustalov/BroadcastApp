@@ -69,8 +69,50 @@ void client::SendToServer(QString str) {
     socket -> write(Data);
 }
 
-void client::on_pushButton_clicked()
+void client::on_push_exchange_rate_clicked()
 {
-    SendToServer("Блін");
+    QString currentStyles = ui -> push_exchange_rate -> styleSheet();
+
+    if (ui -> push_exchange_rate -> text() == "Підписатись") {
+        SendToServer("Ви підписались на сервіс розсилки щоденний курс валют!");
+        ui -> push_exchange_rate -> setStyleSheet(currentStyles + "background-color: #a20c40;");
+        ui -> push_exchange_rate -> setText("Відписатись");
+    } else {
+        SendToServer("Ви відписались від сервісу розсилки щоденний курс валют!");
+        ui -> push_exchange_rate -> setStyleSheet(currentStyles + "background-color: #036317;");
+        ui -> push_exchange_rate -> setText("Підписатись");
+    }
+}
+
+
+void client::on_push_shares_rate_clicked()
+{
+    QString currentStyles = ui -> push_shares_rate -> styleSheet();
+
+    if (ui -> push_shares_rate -> text() == "Підписатись") {
+        SendToServer("Ви підписались на сервіс розсилки щохвилинний курс акцій!");
+        ui -> push_shares_rate -> setStyleSheet(currentStyles + "background-color: #a20c40;");
+        ui -> push_shares_rate -> setText("Відписатись");
+    } else {
+        SendToServer("Ви відписались від сервіс розсилки щохвилинний курс акцій!");
+        ui -> push_shares_rate -> setStyleSheet(currentStyles + "background-color: #036317;");
+        ui -> push_shares_rate -> setText("Підписатись");
+    }
+}
+
+
+void client::on_push_weather_forecast_clicked()
+{
+    QString currentStyles = ui -> push_weather_forecast -> styleSheet();
+
+    if (ui -> push_weather_forecast -> text() == "Підписатись") {
+        SendToServer("Ви підписались на сервіс розсилки щогодинний прогноз погоди!");
+        ui -> push_weather_forecast -> setStyleSheet(currentStyles + "background-color: #a20c40;");
+        ui -> push_weather_forecast -> setText("Відписатись");
+    } else {
+        SendToServer("Ви відписались від сервісу розсилки щогодинний прогноз погоди!");
+        ui -> push_weather_forecast -> setStyleSheet(currentStyles + "background-color: #036317;");
+        ui -> push_weather_forecast -> setText("Підписатись");
+    }
 }
 
