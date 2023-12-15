@@ -2,6 +2,7 @@
 #define CLIENT_H
 
 #include <QMainWindow>
+#include <QTcpSocket>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class client; }
@@ -15,7 +16,19 @@ public:
     client(QWidget *parent = nullptr);
     ~client();
 
+private slots:
+    void on_connectServer_clicked();
+
+    void on_pushButton_clicked();
+
+public slots:
+    void slotReadyRead();
+
 private:
     Ui::client *ui;
+    QTcpSocket *socket;
+    QByteArray Data;
+    void SendToServer(QString str);
+    quint16 nextBlockSize;
 };
 #endif // CLIENT_H
