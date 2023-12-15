@@ -1,38 +1,33 @@
 #include "server.h"
-#include "ui_server.h"
 
-server::server(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::server)
-{
-    ui->setupUi(this);
-}
-
-server::~server()
-{
-    delete ui;
-}
-
-Server::Server() {
-    if(this->listen(QHostAddress::Any, 3000)) {
+server::server() {
+    if(this->listen(QHostAddress("127.0.0.1"), 4000)) {
         qDebug() << "Start";
+        qDebug() << "Server address: " << this->serverAddress().toString();
+
     } else {
         qDebug() << "Error";
     }
     nextBlockSize = 0;
 }
 
-void Server::incomingConnection(qintptr socketDescriptor) {
-    socket = new QTcpSocket;
-    socket -> setSocketDescriptor(socketDescriptor);
-    connect(socket, &QTcpSocket::readyRead, this, &Server::slotReadyRead);
-    connect(socket, &QTcpSocket::disconnected, this, &Server::deleteLater);
+void server::incomingConnection(qintptr socketDescriptor) {
+    qDebug() << "Incoming connection with descriptor: " << socketDescriptor;
 
-    Sockets.push_back(socket);
-    qDebug() << "client connected " << socketDescriptor;
+    QTcpSocket *newSocket = new QTcpSocket;
+    newSocket->setSocketDescriptor(socketDescriptor);
+
+    connect(newSocket, &QTcpSocket::readyRead, this, &server::slotReadyRead);
+    connect(newSocket, &QTcpSocket::disconnected, this, &server::deleteLater);
+
+    Sockets.push_back(newSocket);
+
+    qDebug() << "Client connected with descriptor: " << socketDescriptor;
+    qDebug() << "Number of connected clients: " << Sockets.size();
 }
 
-void Server::slotReadyRead() {
+
+void server::slotReadyRead() {
     socket = (QTcpSocket*)sender();
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_6_2);
@@ -58,10 +53,9 @@ void Server::slotReadyRead() {
     }
 }
 
-void Server::SendToClient(QString str) {
+void server::SendToClient(QString str) {
     Data.clear();
     QDataStream out(&Data, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_6_2);
     out.setVersion(QDataStream::Qt_6_2);
     out << quint16(0) << str;
     out.device() -> seek(0);
@@ -70,4 +64,3 @@ void Server::SendToClient(QString str) {
         Sockets[i] -> write(Data);
     }
 }
-

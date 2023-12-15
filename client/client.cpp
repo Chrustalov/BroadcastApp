@@ -23,6 +23,14 @@ void client::on_connectServer_clicked()
     QString ipAddress = ui->ip_input->text();
     quint16 port = ui->port_input->text().toUShort();
     socket -> connectToHost(ipAddress, port);
+
+    connect(socket, &QTcpSocket::connected, this, [=]() {
+        qDebug() << "Connected to the server!";
+    });
+
+    connect(socket, &QTcpSocket::errorOccurred, this, [=](QAbstractSocket::SocketError socketError) {
+        qDebug() << "Connection error: " << socket->errorString();
+    });
 }
 
 void client::slotReadyRead()
