@@ -74,7 +74,7 @@ void client::on_push_exchange_rate_clicked()
     QString currentStyles = ui -> push_exchange_rate -> styleSheet();
 
     if (ui -> push_exchange_rate -> text() == "Підписатись") {
-        SendToServer("Ви підписались на сервіс розсилки щоденний курс валют!");
+        SendToServer("subscribed");
         ui -> push_exchange_rate -> setStyleSheet(currentStyles + "background-color: #a20c40;");
         ui -> push_exchange_rate -> setText("Відписатись");
     } else {

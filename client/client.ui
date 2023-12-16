@@ -205,7 +205,7 @@ background: #000;
 padding: 0 17px;</string>
     </property>
     <property name="text">
-     <string/>
+     <string>127.0.0.1</string>
     </property>
    </widget>
    <widget class="QLabel" name="ip_label">
@@ -266,6 +266,9 @@ color: #fff;
 background: #000;
 padding: 0 17px;</string>
     </property>
+    <property name="text">
+     <string>4000</string>
+    </property>
    </widget>
    <widget class="QTextBrowser" name="textBrowser">
     <property name="geometry">
@@ -280,7 +283,7 @@ padding: 0 17px;</string>
      <string notr="true">border-radius: 8px;
 border: 1px solid #fff;
 background: #000;
-color: #000;</string>
+color: #fff;</string>
     </property>
     <property name="html">
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
