@@ -17,12 +17,15 @@ client::~client()
     delete ui;
 }
 
-
 void client::on_connectServer_clicked()
 {
     QString ipAddress = ui->ip_input->text();
     quint16 port = ui->port_input->text().toUShort();
     socket -> connectToHost(ipAddress, port);
+
+    QString currentStyles = ui -> connectServer -> styleSheet();
+    ui -> connectServer -> setStyleSheet(currentStyles + "background-color: #008c1d;");
+    ui -> connectServer -> setText("Connected");
 
     connect(socket, &QTcpSocket::connected, this, [=]() {
         qDebug() << "Connected to the server!";
@@ -32,7 +35,6 @@ void client::on_connectServer_clicked()
         qDebug() << "Connection error: " << socket->errorString();
     });
 }
-
 
 void client::slotReadyRead()
 {
@@ -119,4 +121,3 @@ void client::on_push_weather_forecast_clicked()
         ui -> push_weather_forecast -> setText("Підписатись");
     }
 }
-

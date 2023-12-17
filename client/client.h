@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTcpSocket>
+#include <QCloseEvent>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class client; }
