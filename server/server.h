@@ -18,19 +18,24 @@ public slots:
     void clientUnsubscribedCurrency();
     void clientSubscribedStonks();
     void clientUnsubscribedStonks();
+    void clientSubscribedForecast();
+    void clientUnsubscribedForecast();
     void sendPeriodicMessageCurrency();
     void sendPeriodicMessageStonks();
-    //void sendDataToClient(const QString &data) const;
+    void sendPeriodicMessageForecast();
 
 private:
     QTcpSocket *socket;
     QTimer timerCurrency;
     QTimer timerStonks;
+    QTimer timerForecast;
     QByteArray Data;
     bool subscribeCurrency = false;
     bool subscribeStonks = false;
+    bool subscribeForecast = false;
     int currentIndexStonks = 0;
     int currentIndexCurrency = 0;
+    int currentIndexForecast = 0;
 };
 
 class server : public QTcpServer

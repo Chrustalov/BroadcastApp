@@ -110,11 +110,11 @@ void client::on_push_weather_forecast_clicked()
     QString currentStyles = ui -> push_weather_forecast -> styleSheet();
 
     if (ui -> push_weather_forecast -> text() == "Підписатись") {
-        SendToServer("Ви підписались на сервіс розсилки щогодинний прогноз погоди!");
+        SendToServer("subscribedForecast");
         ui -> push_weather_forecast -> setStyleSheet(currentStyles + "background-color: #a20c40;");
         ui -> push_weather_forecast -> setText("Відписатись");
     } else {
-        SendToServer("Ви відписались від сервісу розсилки щогодинний прогноз погоди!");
+        SendToServer("unsubscribedForecast");
         ui -> push_weather_forecast -> setStyleSheet(currentStyles + "background-color: #036317;");
         ui -> push_weather_forecast -> setText("Підписатись");
     }
