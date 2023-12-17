@@ -2,3 +2,5 @@ build-client-Desktop_x86_darwin_generic_mach_o_64bit-Debug
 build-server-Desktop_x86_darwin_generic_mach_o_64bit-Debug
 build-client-Desktop-Debug
 build-server-Desktop-Debug
+client/client.pro.user.e9e00a3
+server/server.pro.user.e9e00a3
