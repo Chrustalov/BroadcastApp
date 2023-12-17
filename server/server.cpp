@@ -17,7 +17,6 @@ server::server() {
 ClientHandler::ClientHandler(QTcpSocket *socket)
     : socket(socket) {
     connect(&timer, &QTimer::timeout, this, &ClientHandler::sendPeriodicMessage);
-
     // Додайте деякі налаштування таймера (наприклад, встановлення інтервалу часу)
     timer.setInterval(10000);
 }
@@ -133,27 +132,30 @@ void ClientHandler::sendPeriodicMessage()
             qDebug() << "Не вдалося відкрити файл.";
             return;
         }
+
         QTextStream in(&file);
         QStringList lines;
         while (!in.atEnd()) {
             lines << in.readLine();
         }
         file.close();
-        //Data.clear();
-        QDataStream out(&Data, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_6_2);
 
-        foreach (const QString &line, lines) {
-            out << quint16(0) << line;
+        if (currentIndex < lines.size()) {
+            QString lineToSend = lines.at(currentIndex);
+
+            // Формуємо дані для відправки
+            Data.clear();
+            QDataStream out(&Data, QIODevice::WriteOnly);
+            out.setVersion(QDataStream::Qt_6_2);
+            out << quint16(0) << lineToSend;
             out.device()->seek(0);
             out << quint16(Data.size() - sizeof(quint16));
-            if (!Data.isEmpty()){
-                socket->write(Data);
-                socket->waitForBytesWritten(); // Забезпечення відправки даних
-                QThread::msleep(10000);
-            }
+
+            socket->write(Data);
+            socket->waitForBytesWritten();
+
+            // Збільшуємо лічильник для вибору наступного рядка
+            currentIndex++;
         }
-        // Надішліть періодичне повідомлення клієнту
     }
 }
-

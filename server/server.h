@@ -24,6 +24,7 @@ private:
     QTimer timer;
     QByteArray Data;
     bool subscribe = false;
+    int currentIndex = 0;
 };
 
 class server : public QTcpServer
