@@ -1,0 +1,10 @@
+Apple: $150.00; Google: $2500.00; Microsoft: $300.50; Amazon: $3500.00; Tesla: $800.00; Facebook: $330.25; NVIDIA: $700.00; Netflix: $550.75; Intel: $50.25; AMD: $120.50
+Apple: $151.00; Google: $2501.00; Microsoft: $301.50; Amazon: $3501.00; Tesla: $801.00; Facebook: $331.25; NVIDIA: $701.00; Netflix: $551.75; Intel: $51.25; AMD: $121.50
+Apple: $152.00; Google: $2502.00; Microsoft: $302.50; Amazon: $3502.00; Tesla: $802.00; Facebook: $332.25; NVIDIA: $702.00; Netflix: $552.75; Intel: $52.25; AMD: $122.50
+Apple: $153.00; Google: $2503.00; Microsoft: $303.50; Amazon: $3503.00; Tesla: $803.00; Facebook: $333.25; NVIDIA: $703.00; Netflix: $553.75; Intel: $53.25; AMD: $123.50
+Apple: $154.00; Google: $2504.00; Microsoft: $304.50; Amazon: $3504.00; Tesla: $804.00; Facebook: $334.25; NVIDIA: $704.00; Netflix: $554.75; Intel: $54.25; AMD: $124.50
+Apple: $155.00; Google: $2505.00; Microsoft: $305.50; Amazon: $3505.00; Tesla: $805.00; Facebook: $335.25; NVIDIA: $705.00; Netflix: $555.75; Intel: $55.25; AMD: $125.50
+Apple: $156.00; Google: $2506.00; Microsoft: $306.50; Amazon: $3506.00; Tesla: $806.00; Facebook: $336.25; NVIDIA: $706.00; Netflix: $556.75; Intel: $56.25; AMD: $126.50
+Apple: $157.00; Google: $2507.00; Microsoft: $307.50; Amazon: $3507.00; Tesla: $807.00; Facebook: $337.25; NVIDIA: $707.00; Netflix: $557.75; Intel: $57.25; AMD: $127.50
+Apple: $158.00; Google: $2508.00; Microsoft: $308.50; Amazon: $3508.00; Tesla: $808.00; Facebook: $338.25; NVIDIA: $708.00; Netflix: $558.75; Intel: $58.25; AMD: $128.50
+Apple: $159.00; Google: $2509.00; Microsoft: $309.50; Amazon: $3509.00; Tesla: $809.00; Facebook: $339.25; NVIDIA: $709.00; Netflix: $559.75; Intel: $59.25; AMD: $129.50

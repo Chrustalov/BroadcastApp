@@ -16,9 +16,11 @@ server::server() {
 
 ClientHandler::ClientHandler(QTcpSocket *socket)
     : socket(socket) {
-    connect(&timer, &QTimer::timeout, this, &ClientHandler::sendPeriodicMessage);
+    connect(&timerCurrency, &QTimer::timeout, this, &ClientHandler::sendPeriodicMessageCurrency);
+    connect(&timerStonks, &QTimer::timeout, this, &ClientHandler::sendPeriodicMessageStonks);
     // Додайте деякі налаштування таймера (наприклад, встановлення інтервалу часу)
-    timer.setInterval(10000);
+    timerCurrency.setInterval(10000);
+    timerStonks.setInterval(5000);
 }
 
 void server::incomingConnection(qintptr socketDescriptor) {
@@ -82,12 +84,20 @@ void server::slotReadyRead() {
 
             nextBlockSize = 0;
             if (clientHandler) {
-                if (str == "subscribed") {
-                    clientHandler -> clientSubscribed();
+                if (str == "subscribedCurrency") {
+                    clientHandler -> clientSubscribedCurrency();
                     SendToClient("Ви підписались на сервіс розсилки щоденний курс валют!", clientHandler->getSocket());
-                } else {
-                    clientHandler -> clientUnsubscribed();
+                } else if (str == "unsubscribedCurrency") {
+                    clientHandler -> clientUnsubscribedCurrency();
                     SendToClient("Ви відписались від сервісу розсилки щоденний курс валют!", clientHandler->getSocket());
+                }
+
+                if (str == "subscribedStonks") {
+                    clientHandler -> clientSubscribedStonks();
+                    SendToClient("Ви підписались на сервіс розсилки щохвилинний курс акцій!", clientHandler->getSocket());
+                } else if (str == "unsubscribedStonks") {
+                    clientHandler -> clientUnsubscribedStonks();
+                    SendToClient("Ви відписались від сервісу розсилки щохвилинний курс акцій!", clientHandler->getSocket());
                 }
             } else {
                 SendToClient("Упс! Помилка", clientHandler->getSocket());
@@ -108,25 +118,31 @@ void server::SendToClient(QString str, QTcpSocket* socket) {
     out << quint16(Data.size() - sizeof(quint16));
 
     socket -> write(Data);
-//    for (int i = 0; i < Sockets.size(); i++) {
-//        Sockets[i] -> write(Data);
-//    }
 }
 
-void ClientHandler::clientSubscribed() {
-    subscribe = true;
-    timer.start();
+void ClientHandler::clientSubscribedCurrency() {
+    subscribeCurrency = true;
+    timerCurrency.start();
 }
 
-void ClientHandler::clientUnsubscribed() {
-    subscribe = false;
-    timer.stop();
+void ClientHandler::clientUnsubscribedCurrency() {
+    subscribeCurrency = false;
+    timerCurrency.stop();
 }
 
+void ClientHandler::clientSubscribedStonks() {
+    subscribeStonks = true;
+    timerStonks.start();
+}
 
-void ClientHandler::sendPeriodicMessage()
+void ClientHandler::clientUnsubscribedStonks() {
+    subscribeStonks = false;
+    timerStonks.stop();
+}
+
+void ClientHandler::sendPeriodicMessageCurrency()
 {
-    if (subscribe) {
+    if (subscribeCurrency) {
         QFile file("../currencies.txt");
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             qDebug() << "Не вдалося відкрити файл.";
@@ -140,8 +156,8 @@ void ClientHandler::sendPeriodicMessage()
         }
         file.close();
 
-        if (currentIndex < lines.size()) {
-            QString lineToSend = lines.at(currentIndex);
+        if (currentIndexCurrency < lines.size()) {
+            QString lineToSend = lines.at(currentIndexCurrency);
 
             // Формуємо дані для відправки
             Data.clear();
@@ -155,7 +171,47 @@ void ClientHandler::sendPeriodicMessage()
             socket->waitForBytesWritten();
 
             // Збільшуємо лічильник для вибору наступного рядка
-            currentIndex++;
+            currentIndexCurrency++;
+        }
+    }
+}
+
+void ClientHandler::sendPeriodicMessageStonks()
+{
+    if (subscribeStonks) {
+        QFile file("../stonks.txt");
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qDebug() << "Не вдалося відкрити файл.";
+            return;
+        }
+
+        QTextStream in(&file);
+        QStringList lines;
+        while (!in.atEnd()) {
+            lines << in.readLine();
+        }
+        file.close();
+
+        Data.clear();
+        QDataStream out(&Data, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_6_2);
+
+        if (currentIndexStonks < lines.size()) {
+            QString lineToSend = lines.at(currentIndexStonks);
+
+            out << quint16(0) << lineToSend;
+            out.device()->seek(0);
+            out << quint16(Data.size() - sizeof(quint16));
+            socket->write(Data);
+            socket->waitForBytesWritten();
+
+            currentIndexStonks++;
+        } else {
+            QString ops = "Упс, сталась прикрість, інформація щодо сервісу закінчилась!";
+            out << quint16(0) << ops;
+            out.device()->seek(0);
+            out << quint16(Data.size() - sizeof(quint16));
+            socket->write(Data);
         }
     }
 }

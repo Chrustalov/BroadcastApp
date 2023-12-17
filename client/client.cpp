@@ -78,11 +78,11 @@ void client::on_push_exchange_rate_clicked()
     QString currentStyles = ui -> push_exchange_rate -> styleSheet();
 
     if (ui -> push_exchange_rate -> text() == "Підписатись") {
-        SendToServer("subscribed");
+        SendToServer("subscribedCurrency");
         ui -> push_exchange_rate -> setStyleSheet(currentStyles + "background-color: #a20c40;");
         ui -> push_exchange_rate -> setText("Відписатись");
     } else {
-        SendToServer("Ви відписались від сервісу розсилки щоденний курс валют!");
+        SendToServer("unsubscribedCurrency");
         ui -> push_exchange_rate -> setStyleSheet(currentStyles + "background-color: #036317;");
         ui -> push_exchange_rate -> setText("Підписатись");
     }
@@ -94,11 +94,11 @@ void client::on_push_shares_rate_clicked()
     QString currentStyles = ui -> push_shares_rate -> styleSheet();
 
     if (ui -> push_shares_rate -> text() == "Підписатись") {
-        SendToServer("Ви підписались на сервіс розсилки щохвилинний курс акцій!");
+        SendToServer("subscribedStonks");
         ui -> push_shares_rate -> setStyleSheet(currentStyles + "background-color: #a20c40;");
         ui -> push_shares_rate -> setText("Відписатись");
     } else {
-        SendToServer("Ви відписались від сервіс розсилки щохвилинний курс акцій!");
+        SendToServer("unsubscribedStonks");
         ui -> push_shares_rate -> setStyleSheet(currentStyles + "background-color: #036317;");
         ui -> push_shares_rate -> setText("Підписатись");
     }

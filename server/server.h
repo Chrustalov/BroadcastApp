@@ -14,17 +14,23 @@ public:
     QTcpSocket* getSocket() const;
 
 public slots:
-    void clientSubscribed();
-    void clientUnsubscribed();
-    void sendPeriodicMessage();
+    void clientSubscribedCurrency();
+    void clientUnsubscribedCurrency();
+    void clientSubscribedStonks();
+    void clientUnsubscribedStonks();
+    void sendPeriodicMessageCurrency();
+    void sendPeriodicMessageStonks();
     //void sendDataToClient(const QString &data) const;
 
 private:
     QTcpSocket *socket;
-    QTimer timer;
+    QTimer timerCurrency;
+    QTimer timerStonks;
     QByteArray Data;
-    bool subscribe = false;
-    int currentIndex = 0;
+    bool subscribeCurrency = false;
+    bool subscribeStonks = false;
+    int currentIndexStonks = 0;
+    int currentIndexCurrency = 0;
 };
 
 class server : public QTcpServer
