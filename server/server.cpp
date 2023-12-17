@@ -121,17 +121,20 @@ void ClientHandler::clientUnsubscribed() {
     timer.stop();
 }
 
+
 void ClientHandler::sendPeriodicMessage()
 {
     if (subscribe) {
         Data.clear();
         QDataStream out(&Data, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_6_2);
-        out << quint16(0) << "str";
-        out.device() -> seek(0);
+
+        QString text = "Курс валют";
+        out << quint16(0) << text;
+        out.device()->seek(0);
         out << quint16(Data.size() - sizeof(quint16));
 
-        socket -> write(Data);
+        socket->write(Data);
         // Надішліть періодичне повідомлення клієнту
     }
 }
