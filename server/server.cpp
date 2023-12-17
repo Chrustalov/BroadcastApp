@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QTimer>
 #include <QThread>
+#include <QDateTime>
 
 server::server() {
     if(this->listen(QHostAddress("127.0.0.1"), 4000)) {
@@ -18,9 +19,11 @@ ClientHandler::ClientHandler(QTcpSocket *socket)
     : socket(socket) {
     connect(&timerCurrency, &QTimer::timeout, this, &ClientHandler::sendPeriodicMessageCurrency);
     connect(&timerStonks, &QTimer::timeout, this, &ClientHandler::sendPeriodicMessageStonks);
+    connect(&timerForecast, &QTimer::timeout, this, &ClientHandler::sendPeriodicMessageForecast);
     // Додайте деякі налаштування таймера (наприклад, встановлення інтервалу часу)
     timerCurrency.setInterval(10000);
     timerStonks.setInterval(5000);
+    timerForecast.setInterval(5000);
 }
 
 void server::incomingConnection(qintptr socketDescriptor) {
@@ -99,6 +102,14 @@ void server::slotReadyRead() {
                     clientHandler -> clientUnsubscribedStonks();
                     SendToClient("Ви відписались від сервісу розсилки щохвилинний курс акцій!", clientHandler->getSocket());
                 }
+
+                if (str == "subscribedForecast") {
+                    clientHandler -> clientSubscribedForecast();
+                    SendToClient("Ви підписались на сервіс розсилки щогодинний прогноз погоди!", clientHandler->getSocket());
+                } else if (str == "unsubscribedForecast") {
+                    clientHandler -> clientUnsubscribedForecast();
+                    SendToClient("Ви відписались від сервісу розсилки щогодинний прогноз погоди!", clientHandler->getSocket());
+                }
             } else {
                 SendToClient("Упс! Помилка", clientHandler->getSocket());
             }
@@ -140,6 +151,16 @@ void ClientHandler::clientUnsubscribedStonks() {
     timerStonks.stop();
 }
 
+void ClientHandler::clientSubscribedForecast() {
+    subscribeForecast = true;
+    timerForecast.start();
+}
+
+void ClientHandler::clientUnsubscribedForecast() {
+    subscribeForecast = false;
+    timerForecast.stop();
+}
+
 void ClientHandler::sendPeriodicMessageCurrency()
 {
     if (subscribeCurrency) {
@@ -148,7 +169,6 @@ void ClientHandler::sendPeriodicMessageCurrency()
             qDebug() << "Не вдалося відкрити файл.";
             return;
         }
-
         QTextStream in(&file);
         QStringList lines;
         while (!in.atEnd()) {
@@ -158,23 +178,22 @@ void ClientHandler::sendPeriodicMessageCurrency()
 
         if (currentIndexCurrency < lines.size()) {
             QString lineToSend = lines.at(currentIndexCurrency);
-
-            // Формуємо дані для відправки
             Data.clear();
             QDataStream out(&Data, QIODevice::WriteOnly);
             out.setVersion(QDataStream::Qt_6_2);
-            out << quint16(0) << lineToSend;
+            QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+            out << quint16(0) << currentTime + " | " + lineToSend;
+            //out << quint16(0) << lineToSend;
             out.device()->seek(0);
             out << quint16(Data.size() - sizeof(quint16));
 
             socket->write(Data);
             socket->waitForBytesWritten();
-
-            // Збільшуємо лічильник для вибору наступного рядка
             currentIndexCurrency++;
         }
     }
 }
+
 
 void ClientHandler::sendPeriodicMessageStonks()
 {
@@ -198,8 +217,8 @@ void ClientHandler::sendPeriodicMessageStonks()
 
         if (currentIndexStonks < lines.size()) {
             QString lineToSend = lines.at(currentIndexStonks);
-
-            out << quint16(0) << lineToSend;
+            QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+            out << quint16(0) << currentTime + " | " + lineToSend;
             out.device()->seek(0);
             out << quint16(Data.size() - sizeof(quint16));
             socket->write(Data);
@@ -212,6 +231,39 @@ void ClientHandler::sendPeriodicMessageStonks()
             out.device()->seek(0);
             out << quint16(Data.size() - sizeof(quint16));
             socket->write(Data);
+        }
+    }
+}
+
+void ClientHandler::sendPeriodicMessageForecast()
+{
+    if (subscribeForecast) {
+        QFile file("../forecasts.txt");
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qDebug() << "Не вдалося відкрити файл.";
+            return;
+        }
+        QTextStream in(&file);
+        QStringList lines;
+        while (!in.atEnd()) {
+            lines << in.readLine();
+        }
+        file.close();
+
+        if (currentIndexForecast < lines.size()) {
+            QString lineToSend = lines.at(currentIndexForecast);
+            Data.clear();
+            QDataStream out(&Data, QIODevice::WriteOnly);
+            out.setVersion(QDataStream::Qt_6_2);
+            QString currentTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss");
+            out << quint16(0) << currentTime + " | " + lineToSend;
+            //out << quint16(0) << lineToSend;
+            out.device()->seek(0);
+            out << quint16(Data.size() - sizeof(quint16));
+
+            socket->write(Data);
+            socket->waitForBytesWritten();
+            currentIndexForecast++;
         }
     }
 }
