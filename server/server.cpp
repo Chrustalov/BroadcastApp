@@ -1,4 +1,7 @@
 #include "server.h"
+#include <QFile>
+#include <QTimer>
+#include <QThread>
 
 server::server() {
     if(this->listen(QHostAddress("127.0.0.1"), 4000)) {
@@ -125,16 +128,32 @@ void ClientHandler::clientUnsubscribed() {
 void ClientHandler::sendPeriodicMessage()
 {
     if (subscribe) {
-        Data.clear();
+        QFile file("../currencies.txt");
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qDebug() << "Не вдалося відкрити файл.";
+            return;
+        }
+        QTextStream in(&file);
+        QStringList lines;
+        while (!in.atEnd()) {
+            lines << in.readLine();
+        }
+        file.close();
+        //Data.clear();
         QDataStream out(&Data, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_6_2);
 
-        QString text = "Курс валют";
-        out << quint16(0) << text;
-        out.device()->seek(0);
-        out << quint16(Data.size() - sizeof(quint16));
-
-        socket->write(Data);
+        foreach (const QString &line, lines) {
+            out << quint16(0) << line;
+            out.device()->seek(0);
+            out << quint16(Data.size() - sizeof(quint16));
+            if (!Data.isEmpty()){
+                socket->write(Data);
+                socket->waitForBytesWritten(); // Забезпечення відправки даних
+                QThread::msleep(10000);
+            }
+        }
         // Надішліть періодичне повідомлення клієнту
     }
 }
+

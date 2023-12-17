@@ -17,6 +17,7 @@ public slots:
     void clientSubscribed();
     void clientUnsubscribed();
     void sendPeriodicMessage();
+    //void sendDataToClient(const QString &data) const;
 
 private:
     QTcpSocket *socket;

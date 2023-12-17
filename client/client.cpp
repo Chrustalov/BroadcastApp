@@ -33,6 +33,7 @@ void client::on_connectServer_clicked()
     });
 }
 
+
 void client::slotReadyRead()
 {
     socket = (QTcpSocket*)sender();
@@ -52,12 +53,15 @@ void client::slotReadyRead()
             QString str;
             in >> str;
             nextBlockSize = 0;
-            ui -> textBrowser -> append(str);
+            if (!str.isEmpty()){
+                ui -> textBrowser -> append(str);
+            }
         }
     } else {
         ui -> textBrowser -> append("read error");
     }
 }
+
 
 void client::SendToServer(QString str) {
     Data.clear();
