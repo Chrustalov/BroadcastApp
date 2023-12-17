@@ -1,5 +1,6 @@
 #include "client.h"
 #include "ui_client.h"
+#include <QFile>
 
 client::client(QWidget *parent)
     : QMainWindow(parent)
@@ -17,24 +18,66 @@ client::~client()
     delete ui;
 }
 
+void client::CreateUserFile(const QString &fileName) {
+    QFile file(fileName + ".log");
+    if (file.exists()) {
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&file);
+            QString fileContent = in.readAll();
+            ui->textBrowser->setPlainText(fileContent);
+            file.close();
+        } else {
+            qDebug() << "Помилка відкриття файлу для читання: " << file.errorString();
+        }
+    }
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        file.close();
+    } else {
+        // Обробка помилки відкриття файлу
+        qDebug() << "Помилка створення файлу для запису: " << file.errorString();
+    }
+}
+
+
+void client::closeEvent(QCloseEvent *event) {
+    QString user = ui->user_nickname->text();
+    QString fileName = user + ".log";
+    QFile file(fileName);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream stream(&file);
+        QString text = ui->textBrowser->toPlainText();
+        stream << text;
+        file.close();
+    } else {
+        qDebug() << "Помилка відкриття файлу для запису: " << file.errorString();
+    }
+    QMainWindow::closeEvent(event);
+}
+
+
+
 void client::on_connectServer_clicked()
 {
     QString ipAddress = ui->ip_input->text();
     quint16 port = ui->port_input->text().toUShort();
-    socket -> connectToHost(ipAddress, port);
+    socket->connectToHost(ipAddress, port);
 
-    QString currentStyles = ui -> connectServer -> styleSheet();
-    ui -> connectServer -> setStyleSheet(currentStyles + "background-color: #008c1d;");
-    ui -> connectServer -> setText("Connected");
+    QString currentStyles = ui->connectServer->styleSheet();
+    ui->connectServer->setStyleSheet(currentStyles + "background-color: #008c1d;");
+    ui->connectServer->setText("Connected");
+    QString user = ui->user_nickname->text();
+
 
     connect(socket, &QTcpSocket::connected, this, [=]() {
         qDebug() << "Connected to the server!";
+        CreateUserFile(user);
     });
 
     connect(socket, &QTcpSocket::errorOccurred, this, [=](QAbstractSocket::SocketError socketError) {
         qDebug() << "Connection error: " << socket->errorString();
     });
 }
+
 
 void client::slotReadyRead()
 {

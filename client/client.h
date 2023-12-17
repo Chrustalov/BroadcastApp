@@ -35,5 +35,7 @@ private:
     QByteArray Data;
     void SendToServer(QString str);
     quint16 nextBlockSize;
+    void CreateUserFile(const QString &fileName);
+    void closeEvent(QCloseEvent *event) override;
 };
 #endif // CLIENT_H
