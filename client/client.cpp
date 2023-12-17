@@ -24,7 +24,7 @@ void client::CreateUserFile(const QString &fileName) {
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(&file);
             QString fileContent = in.readAll();
-            ui->textBrowser->setPlainText(fileContent);
+            ui->textBrowser->setPlainText(fileContent + "\n---------------------------------- LOG ----------------------------------\n");
             file.close();
         } else {
             qDebug() << "Помилка відкриття файлу для читання: " << file.errorString();
